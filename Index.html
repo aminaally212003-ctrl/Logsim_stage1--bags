@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogSim - Stage 1</title>
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#0f172a;
+    color:white;
+    margin:0;
+    padding:0;
+}
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:30px;
+}
+.card{
+    background:#1e293b;
+    padding:25px;
+    border-radius:20px;
+    margin-bottom:20px;
+}
+h1,h2{
+    text-align:center;
+}
+.buttons{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    margin-top:20px;
+}
+button{
+    border:none;
+    padding:18px;
+    border-radius:15px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.2s;
+}
+button:hover{
+    transform:scale(1.03);
+}
+.white{background:white;color:black;}
+.green{background:#22c55e;color:black;}
+.yellow{background:#facc15;color:black;}
+.red{background:#ef4444;color:white;}
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    text-align:center;
+}
+.stat{
+    background:#334155;
+    padding:20px;
+    border-radius:15px;
+}
+.hidden{
+    display:none;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>LogSim — Stage 1</h1>
+<h2>Bag Delivery Crisis</h2>
+
+<div id="intro" class="card">
+    <h2>Story</h2>
+    <p>
+        You are a new logistics manager at MetroBag Logistics in 2035.
+        A luxury fashion event begins tonight and stores urgently need bag deliveries.
+        Your decisions affect profit, fuel usage, and customer satisfaction.
+    </p>
+
+    <h2>Delivery Request</h2>
+    <p>Deliver 20 luxury bags to Downtown Fashion Store before the event starts in 2 hours.</p>
+
+    <div class="buttons">
+        <button class="white" onclick="chooseVehicle('bike')">
+            <b>Bike Courier</b><br><br>
+            Fast<br>Cheap<br>Low Capacity
+        </button>
+
+        <button class="white" onclick="chooseVehicle('van')">
+            <b>Delivery Van</b><br><br>
+            Balanced Speed<br>Moderate Fuel<br>Medium Capacity
+        </button>
+
+        <button class="white" onclick="chooseVehicle('truck')">
+            <b>Cargo Truck</b><br><br>
+            Large Capacity<br>High Fuel Cost<br>Slow in Traffic
+        </button>
+    </div>
+</div>
+
+<div id="result" class="hidden">
+    <div class="card">
+        <h2>Delivery Consequences</h2>
+        <p id="message"></p>
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            <h3>Profit</h3>
+            <p id="profit"></p>
+        </div>
+
+        <div class="stat">
+            <h3>Fuel</h3>
+            <p id="fuel"></p>
+        </div>
+
+        <div class="stat">
+            <h3>Satisfaction</h3>
+            <p id="satisfaction"></p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>New Problem: Heavy Traffic</h2>
+        <p>A traffic accident blocks the main road. Choose your response.</p>
+
+        <div class="buttons">
+            <button class="green" onclick="nextChoice('reroute')">Use Toll Road</button>
+            <button class="yellow" onclick="nextChoice('wait')">Wait in Traffic</button>
+            <button class="red" onclick="nextChoice('express')">Express Delivery Route</button>
+        </div>
+    </div>
+</div>
+
+<div id="final" class="hidden">
+    <div class="card">
+        <h2>Stage 1 Complete</h2>
+        <p id="finalMessage"></p>
+
+        <div class="stats">
+            <div class="stat">
+                <h3>Final Profit</h3>
+                <p id="finalProfit"></p>
+            </div>
+
+            <div class="stat">
+                <h3>Remaining Fuel</h3>
+                <p id="finalFuel"></p>
+            </div>
+
+            <div class="stat">
+                <h3>Customer Rating</h3>
+                <p id="finalSatisfaction"></p>
+            </div>
+        </div>
+
+        <div style="text-align:center;margin-top:20px;">
+            <button class="white" onclick="location.reload()">Restart Stage</button>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script>
+let profit = 0;
+let fuel = 100;
+let satisfaction = 100;
+let currentMessage = "";
+
+function chooseVehicle(vehicle){
+    if(vehicle === "bike"){
+        profit = 90;
+        fuel = 95;
+        satisfaction = 60;
+        currentMessage = "You chose the Bike Courier. Multiple trips were needed and the delivery arrived late.";
+    }
+
+    if(vehicle === "van"){
+        profit = 140;
+        fuel = 75;
+        satisfaction = 90;
+        currentMessage = "You chose the Delivery Van. The bags arrived on time with balanced fuel usage.";
+    }
+
+    if(vehicle === "truck"){
+        profit = 110;
+        fuel = 45;
+        satisfaction = 95;
+        currentMessage = "You chose the Cargo Truck. The delivery arrived safely but fuel costs were extremely high.";
+    }
+
+    document.getElementById("intro").classList.add("hidden");
+    document.getElementById("result").classList.remove("hidden");
+
+    document.getElementById("message").innerText = currentMessage;
+    document.getElementById("profit").innerText = "$" + profit;
+    document.getElementById("fuel").innerText = fuel + "%";
+    document.getElementById("satisfaction").innerText = satisfaction + "%";
+}
+
+function nextChoice(choice){
+
+    if(choice === "reroute"){
+        profit -= 20;
+        fuel -= 10;
+        satisfaction += 5;
+        currentMessage = "You used the toll road. Delivery stayed on schedule but costs increased.";
+    }
+
+    if(choice === "wait"){
+        satisfaction -= 20;
+        currentMessage = "You waited in traffic. Customers complained about delays.";
+    }
+
+    if(choice === "express"){
+        profit -= 40;
+        fuel -= 20;
+        satisfaction += 10;
+        currentMessage = "You used the express route. Delivery arrived early and customer satisfaction increased.";
+    }
+
+    document.getElementById("result").classList.add("hidden");
+    document.getElementById("final").classList.remove("hidden");
+
+    document.getElementById("finalMessage").innerText = currentMessage;
+    document.getElementById("finalProfit").innerText = "$" + profit;
+    document.getElementById("finalFuel").innerText = fuel + "%";
+    document.getElementById("finalSatisfaction").innerText = satisfaction + "%";
+}
+</script>
+
+</body>
+</html>
